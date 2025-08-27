@@ -1,0 +1,2148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicus Studio - Premium Web Solutions</title>
+    <style>
+        /* ==== RESET & BASE STYLES ==== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #007AFF;
+            --primary-purple: #5856D6;
+            --electric-blue: #00D4FF;
+            --neon-green: #30D158;
+            --hot-pink: #FF2D92;
+            --text-light: #1d1d1f;
+            --text-dark: #86868b;
+            --bg-light: #f5f5f7;
+            --bg-dark: #000000;
+            --accent-gradient: linear-gradient(135deg, #007AFF 0%, #5856D6 50%, #FF2D92 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-light);
+            overflow-x: hidden;
+            cursor: none;
+            background: #000;
+        }
+
+        /* ==== CUSTOM CURSOR SYSTEM ==== */
+        .cursor {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: all 0.1s ease;
+        }
+
+        .cursor-glow {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(0,122,255,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--electric-blue);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.7;
+        }
+
+        /* ==== LANGUAGE TOGGLE ==== */
+        .lang-toggle {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 1001;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 12px 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            font-weight: 600;
+        }
+
+        .lang-toggle:hover {
+            transform: scale(1.05) translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 122, 255, 0.3);
+        }
+
+        /* ==== NAVIGATION ==== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 20px 0;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.95);
+            box-shadow: 0 1px 50px rgba(0, 122, 255, 0.2);
+            padding: 15px 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-gradient);
+            transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .nav-links a:hover {
+            color: var(--electric-blue);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ==== HERO SECTION ==== */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, #000428 0%, #004e92 50%, #000428 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="glow1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="%23007AFF" stop-opacity="0.3"/><stop offset="100%" stop-color="%23007AFF" stop-opacity="0"/></radialGradient><radialGradient id="glow2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="%235856D6" stop-opacity="0.2"/><stop offset="100%" stop-color="%235856D6" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23glow1)"><animate attributeName="r" values="100;200;100" dur="4s" repeatCount="indefinite"/><animate attributeName="cx" values="200;300;200" dur="6s" repeatCount="indefinite"/></circle><circle cx="800" cy="300" r="150" fill="url(%23glow2)"><animate attributeName="r" values="150;250;150" dur="5s" repeatCount="indefinite"/><animate attributeName="cy" values="300;200;300" dur="8s" repeatCount="indefinite"/></circle><circle cx="600" cy="700" r="120" fill="url(%23glow1)"><animate attributeName="r" values="120;220;120" dur="7s" repeatCount="indefinite"/><animate attributeName="cx" values="600;500;600" dur="9s" repeatCount="indefinite"/></circle></svg>') center/cover;
+            animation: heroFloat 15s ease-in-out infinite;
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            animation: float1 20s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 15%;
+            animation: float2 15s ease-in-out infinite reverse;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            bottom: 20%;
+            left: 20%;
+            animation: float3 25s ease-in-out infinite;
+        }
+
+        .hero-content {
+            color: white;
+            z-index: 2;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: clamp(4rem, 10vw, 10rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #ffffff, #007AFF, #5856D6, #FF2D92, #ffffff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite, slideInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            font-weight: 700;
+            animation: slideInUp 1s ease-out 0.2s both;
+        }
+
+        .hero p {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            margin-bottom: 3rem;
+            opacity: 0.8;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: slideInUp 1s ease-out 0.4s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: slideInUp 1s ease-out 0.6s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 18px 45px;
+            background: var(--accent-gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(0, 122, 255, 0.4);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--electric-blue);
+        }
+
+        /* ==== SCROLL INDICATOR ==== */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator::before {
+            content: '';
+            width: 2px;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, var(--electric-blue));
+            display: block;
+            margin: 0 auto 10px;
+        }
+
+        .scroll-indicator::after {
+            content: '⌄';
+            color: var(--electric-blue);
+            font-size: 1.5rem;
+            display: block;
+            text-align: center;
+        }
+
+        /* ==== ABOUT SECTION ==== */
+        .about {
+            padding: 120px 30px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            position: relative;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 80px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin: 80px 0;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--electric-blue);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        /* ==== SERVICES SECTION ==== */
+        .services {
+            padding: 120px 30px;
+            background: linear-gradient(135deg, #000 0%, #1a0033 50%, #000 100%);
+            position: relative;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .service-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 50px 40px;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .service-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .service-card:hover::before,
+        .service-card:hover::after {
+            opacity: 1;
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 80px rgba(0, 122, 255, 0.3);
+        }
+
+        .service-icon {
+            font-size: 4rem;
+            margin-bottom: 30px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ==== PORTFOLIO SECTION ==== */
+        .portfolio {
+            padding: 120px 30px;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 50px;
+            margin-top: 80px;
+        }
+
+        .portfolio-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 80px rgba(0, 122, 255, 0.4);
+        }
+
+        .portfolio-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(45deg, var(--primary-blue), var(--primary-purple));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portfolio-image::before {
+            content: '🏥';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            opacity: 0.3;
+        }
+
+        .portfolio-content {
+            padding: 30px;
+        }
+
+        .portfolio-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .portfolio-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+        }
+
+        .portfolio-tech {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tech-tag {
+            background: rgba(0, 122, 255, 0.2);
+            color: var(--electric-blue);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* ==== TESTIMONIALS SECTION ==== */
+        .testimonials {
+            padding: 120px 30px;
+            background: linear-gradient(135deg, #000 0%, #2d1b69 50%, #000 100%);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .testimonial-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 40px 30px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 6rem;
+            color: var(--electric-blue);
+            opacity: 0.3;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .testimonial-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .author-info h4 {
+            color: white;
+            font-weight: 600;
+        }
+
+        .author-info p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* ==== PRICING SECTION ==== */
+        .pricing {
+            padding: 120px 30px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 80px;
+        }
+
+        .pricing-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 50px 40px;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card.featured {
+            border: 2px solid var(--electric-blue);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'NAJPOPULARNIJI';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-gradient);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 80px rgba(0, 122, 255, 0.3);
+        }
+
+        .pricing-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--electric-blue);
+            margin-bottom: 10px;
+        }
+
+        .pricing-period {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 30px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+
+        .pricing-features li {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--neon-green);
+            font-weight: 700;
+        }
+
+        .pricing-button {
+            width: 100%;
+            padding: 15px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 122, 255, 0.4);
+        }
+
+        /* ==== CONTACT SECTION ==== */
+        .contact {
+            padding: 120px 30px;
+            background: linear-gradient(135deg, #000428 0%, #004e92 50%, #000428 100%);
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            margin-top: 80px;
+        }
+
+        .contact-info {
+            color: white;
+        }
+
+        .contact-info h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .contact-info p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .contact-details {
+            list-style: none;
+        }
+
+        .contact-details li {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .contact-details li i {
+            font-size: 1.5rem;
+            color: var(--electric-blue);
+        }
+
+        .contact-form {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            color: white;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--electric-blue);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 122, 255, 0.4);
+        }
+
+        /* ==== FOOTER ==== */
+        .footer {
+            background: #000;
+            padding: 60px 30px 30px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .social-links a {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--electric-blue);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* ==== ANIMATIONS ==== */
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes heroFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(50px, -30px) rotate(120deg); }
+            66% { transform: translate(-30px, -60px) rotate(240deg); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-40px, 40px) rotate(180deg); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(30px, -20px) rotate(90deg); }
+            50% { transform: translate(60px, 0px) rotate(180deg); }
+            75% { transform: translate(30px, 20px) rotate(270deg); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-10px) translateX(-50%); }
+            60% { transform: translateY(-5px) translateX(-50%); }
+        }
+
+        /* ==== RESPONSIVE DESIGN ==== */
+        @media (max-width: 1024px) {
+            .nav-links {
+                gap: 25px;
+            }
+            
+            .hero h1 {
+                font-size: clamp(3rem, 8vw, 6rem);
+            }
+            
+            .services-grid,
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 250px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+            
+            .testimonials-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lang-toggle {
+                top: 20px;
+                right: 20px;
+                padding: 10px 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: clamp(2.5rem, 8vw, 4rem);
+            }
+        }
+
+        /* ==== SCROLL ANIMATIONS ==== */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(80px);
+            transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==== LOADING ANIMATION ==== */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-logo {
+            font-size: 4rem;
+            font-weight: 900;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loader-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin: 30px auto;
+            overflow: hidden;
+        }
+
+        .loader-bar {
+            height: 100%;
+            background: var(--accent-gradient);
+            border-radius: 2px;
+            animation: loading 2s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ==== LOADER ==== -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-logo">MEDICUS STUDIO</div>
+            <div class="loader-progress">
+                <div class="loader-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==== CUSTOM CURSOR ==== -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-glow" id="cursor-glow"></div>
+
+    <!-- ==== LANGUAGE TOGGLE ==== -->
+    <div class="lang-toggle" id="langToggle">EN | SR</div>
+
+    <!-- ==== NAVIGATION ==== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">MEDICUS STUDIO</div>
+            <ul class="nav-links">
+                <li><a href="#home" data-en="Home" data-sr="Početna">Home</a></li>
+                <li><a href="#about" data-en="About" data-sr="O nama">About</a></li>
+                <li><a href="#services" data-en="Services" data-sr="Usluge">Services</a></li>
+                <li><a href="#portfolio" data-en="Portfolio" data-sr="Portfolio">Portfolio</a></li>
+                <li><a href="#testimonials" data-en="Testimonials" data-sr="Utisci">Testimonials</a></li>
+                <li><a href="#pricing" data-en="Pricing" data-sr="Cene">Pricing</a></li>
+                <li><a href="#contact" data-en="Contact" data-sr="Kontakt">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ==== HERO SECTION ==== -->
+    <section class="hero" id="home">
+        <div class="hero-bg-animation"></div>
+        <div class="floating-elements">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+        </div>
+        <div class="hero-content">
+            <h1 data-en="MEDICUS STUDIO" data-sr="MEDICUS STUDIO">MEDICUS STUDIO</h1>
+            <div class="hero-subtitle" data-en="Where Ideas Come to Life" data-sr="Gde ideje oživljavaju">Gde ideje oživljavaju</div>
+            <p data-en="We craft extraordinary digital experiences that don't just look beautiful — they work beautifully. From medical platforms to e-commerce empires, we transform visions into reality with pixel-perfect precision and cutting-edge innovation." data-sr="Kreiramo izuzetna digitalna iskustva koja ne samo što izgleda prelepo — funkcionišu prelepo. Od medicinskih platforma do e-commerce carstava, transformišemo vizije u realnost sa piksel-savršenom preciznošću i najmodernijim inovacijama.">
+                Kreiramo izuzetna digitalna iskustva koja ne samo što izgleda prelepo — funkcionišu prelepo. Od medicinskih platforma do e-commerce carstava, transformišemo vizije u realnost sa piksel-savršenom preciznošću i najmodernijim inovacijama.
+            </p>
+            <div class="hero-buttons">
+                <a href="#portfolio" class="cta-button" data-en="View Our Work" data-sr="Pogledaj Naš Rad">View Our Work</a>
+                <a href="#contact" class="cta-button cta-secondary" data-en="Get Started" data-sr="Počni Odmah">Get Started</a>
+            </div>
+        </div>
+        <div class="scroll-indicator"></div>
+    </section>
+
+    <!-- ==== ABOUT SECTION ==== -->
+    <section class="about scroll-reveal" id="about">
+        <div class="container">
+            <h2 class="section-title" data-en="Excellence in Every Pixel" data-sr="Savršenstvo u Svakom Pikselu">Excellence in Every Pixel</h2>
+            <p class="section-subtitle" data-en="With 8 years of experience and over 120 completed projects, we deliver world-class digital solutions backed by our team of 70+ professionals." data-sr="Sa 8 godina iskustva i preko 120 završenih projekata, pružamo svetske digitalne solucije podržane našim timom od 70+ profesionalaca.">
+                With 8 years of experience and over 120 completed projects, we deliver world-class digital solutions backed by our team of 70+ professionals.
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-card scroll-reveal">
+                    <span class="stat-number">120+</span>
+                    <span class="stat-label" data-en="Projects Completed" data-sr="Završenih Projekata">Projects Completed</span>
+                </div>
+                <div class="stat-card scroll-reveal">
+                    <span class="stat-number">8</span>
+                    <span class="stat-label" data-en="Years Experience" data-sr="Godina Iskustva">Years Experience</span>
+                </div>
+                <div class="stat-card scroll-reveal">
+                    <span class="stat-number">70+</span>
+                    <span class="stat-label" data-en="Team Members" data-sr="Članova Tima">Team Members</span>
+                </div>
+                <div class="stat-card scroll-reveal">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label" data-en="Client Satisfaction" data-sr="Zadovoljstvo Klijenata">Client Satisfaction</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==== SERVICES SECTION ==== -->
+    <section class="services scroll-reveal" id="services">
+        <div class="container">
+            <h2 class="section-title" data-en="What Sets Us Apart" data-sr="Nešto što nas izdvaja">Nešto što nas izdvaja</h2>
+            <p class="section-subtitle" data-en="We don't follow trends — we create them. From revolutionary medical platforms to game-changing e-commerce solutions, every project is a masterpiece of innovation and artistry." data-sr="Mi ne sledimo trendove — mi ih kreiramo. Od revolucionarnih medicinskih platforma do e-commerce rešenja koja menjaju igru, svaki projekat je remek-delo inovacije i umetnosti.">
+                Mi ne sledimo trendove — mi ih kreiramo. Od revolucionarnih medicinskih platforma do e-commerce rešenja koja menjaju igru, svaki projekat je remek-delo inovacije i umetnosti.
+            </p>
+            
+            <div class="services-grid">
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">🏥</div>
+                    <h3 class="service-title" data-en="Medical Websites" data-sr="Medicinski Sajtovi">Medical Websites</h3>
+                    <p class="service-description" data-en="HIPAA-compliant medical websites with patient portals, appointment booking, and telemedicine integration." data-sr="HIPAA usaglašeni medicinski sajtovi sa portalima za pacijente, rezervacijom termina i integracijom telemedicine.">
+                        HIPAA-compliant medical websites with patient portals, appointment booking, and telemedicine integration.
+                    </p>
+                </div>
+                
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">🛒</div>
+                    <h3 class="service-title" data-en="E-Commerce Solutions" data-sr="E-Commerce Rešenja">E-Commerce Solutions</h3>
+                    <p class="service-description" data-en="High-converting online stores with advanced payment systems, inventory management, and analytics." data-sr="Visoko konvertujuće online prodavnice sa naprednim sistemima plaćanja, upravljanjem inventara i analitikom.">
+                        High-converting online stores with advanced payment systems, inventory management, and analytics.
+                    </p>
+                </div>
+                
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">📱</div>
+                    <h3 class="service-title" data-en="Mobile Applications" data-sr="Mobilne Aplikacije">Mobile Applications</h3>
+                    <p class="service-description" data-en="Cross-platform mobile apps with native performance and seamless user experiences." data-sr="Kros-platfrom mobilne aplikacije sa nativnim performansama i besprekorno korisničko iskustvo.">
+                        Cross-platform mobile apps with native performance and seamless user experiences.
+                    </p>
+                </div>
+                
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">🎨</div>
+                    <h3 class="service-title" data-en="UI/UX Design" data-sr="UI/UX Dizajn">UI/UX Design</h3>
+                    <p class="service-description" data-en="Award-winning designs that combine aesthetic beauty with functional excellence." data-sr="Nagrađivani dizajni koji kombinuju estetsku lepotu sa funkcionalnim savršenstvom.">
+                        Award-winning designs that combine aesthetic beauty with functional excellence.
+                    </p>
+                </div>
+                
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">⚡</div>
+                    <h3 class="service-title" data-en="Performance Optimization" data-sr="Optimizacija Performansi">Performance Optimization</h3>
+                    <p class="service-description" data-en="Lightning-fast websites with 99.9% uptime and superior SEO performance." data-sr="Munjevito brzi sajtovi sa 99.9% uptime-om i superiornm SEO performansama.">
+                        Lightning-fast websites with 99.9% uptime and superior SEO performance.
+                    </p>
+                </div>
+                
+                <div class="service-card scroll-reveal">
+                    <div class="service-icon">🔒</div>
+                    <h3 class="service-title" data-en="Security Solutions" data-sr="Bezbednosna Rešenja">Security Solutions</h3>
+                    <p class="service-description" data-en="Enterprise-grade security with SSL certificates, data encryption, and regular security audits." data-sr="Preduzeća klase bezbednost sa SSL sertifikatima, enkripcijom podataka i redovnim bezbednosnim auditima.">
+                        Enterprise-grade security with SSL certificates, data encryption, and regular security audits.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==== PORTFOLIO SECTION ==== -->
+    <section class="portfolio scroll-reveal" id="portfolio">
+        <div class="container">
+            <h2 class="section-title" data-en="Our Latest Work" data-sr="Naš Najnoviji Rad">Our Latest Work</h2>
+            <p class="section-subtitle" data-en="Explore our portfolio of successful projects that showcase our expertise and creativity." data-sr="Istražite naš portfolio uspešnih projekata koji prikazuju našu ekspertizu i kreativnost.">
+                Explore our portfolio of successful projects that showcase our expertise and creativity.
+            </p>
+            
+            <div class="portfolio-grid">
+                <div class="portfolio-item scroll-reveal" onclick="window.open('https://en.medicareclinic.co.uk/', '_blank')">
+                    <div class="portfolio-image">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; text-align: center;">
+                            <h3>MediCare Clinic</h3>
+                            <p>Click to view live site</p>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title" data-en="MediCare Clinic Platform" data-sr="MediCare Clinic Platforma">MediCare Clinic Platform</h3>
+                        <p class="portfolio-description" data-en="Comprehensive medical platform with patient management and telemedicine capabilities." data-sr="Sveobuhvatna medicinska platforma sa upravljanjem pacijentima i telemedicine mogućnostima.">
+                            Comprehensive medical platform with patient management and telemedicine capabilities.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">HIPAA</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item scroll-reveal" onclick="window.open('https://www.apollopharmacy.in/', '_blank')">
+                    <div class="portfolio-image" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4);">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; text-align: center;">
+                            <h3>Apollo Pharmacy</h3>
+                            <p>Click to view live site</p>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title" data-en="Apollo Pharmacy E-Store" data-sr="Apollo Pharmacy E-Store">Apollo Pharmacy E-Store</h3>
+                        <p class="portfolio-description" data-en="Advanced pharmaceutical e-commerce platform with prescription management." data-sr="Napredna farmaceutska e-commerce platforma sa upravljanjem receptima.">
+                            Advanced pharmaceutical e-commerce platform with prescription management.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">E-Commerce</span>
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">MySQL</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item scroll-reveal" onclick="window.open('https://cdn.dribbble.com/userupload/12515788/file/original-952560141bc16dd099ceb2a90271c154.png?resize=1024x768&vertical=center', '_blank')">
+                    <div class="portfolio-image" style="background: linear-gradient(45deg, #667eea, #764ba2);">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; text-align: center;">
+                            <h3>Medical Dashboard</h3>
+                            <p>Click to view design</p>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title" data-en="Medical Dashboard UI" data-sr="Medicinski Dashboard UI">Medical Dashboard UI</h3>
+                        <p class="portfolio-description" data-en="Modern dashboard design for healthcare professionals with data visualization." data-sr="Moderan dashboard dizajn za zdravstvene profesionalce sa vizuelizacijom podataka.">
+                            Modern dashboard design for healthcare professionals with data visualization.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">UI/UX</span>
+                            <span class="tech-tag">Figma</span>
+                            <span class="tech-tag">Design</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==== TESTIMONIALS SECTION ==== -->
+    <section class="testimonials scroll-reveal" id="testimonials">
+        <div class="container">
+            <h2 class="section-title" data-en="What Our Clients Say" data-sr="Šta Kažu Naši Klijenti">What Our Clients Say</h2>
+            <p class="section-subtitle" data-en="Don't just take our word for it - hear from our satisfied clients across Serbia and beyond." data-sr="Ne verujte samo nama - čujte od naših zadovoljnih klijenata širom Srbije i šire.">
+                Don't just take our word for it - hear from our satisfied clients across Serbia and beyond.
+            </p>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card scroll-reveal">
+                    <p class="testimonial-text" data-en="Medicus Studio transformed our medical practice with an outstanding website. Our patient bookings increased by 300% in just 3 months!" data-sr="Medicus Studio je transformisao našu medicinsku praksu sa izvanrednim sajtom. Naše rezervacije pacijenata su se povećale za 300% za samo 3 meseca!">
+                        "Medicus Studio transformed our medical practice with an outstanding website. Our patient bookings increased by 300% in just 3 months!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">DM</div>
+                        <div class="author-info">
+                            <h4 data-en="Dr. Marko Petrović" data-sr="Dr Marko Petrović">Dr. Marko Petrović</h4>
+                            <p data-en="Cardiology Center, Belgrade" data-sr="Centar za kardiologiju, Beograd">Cardiology Center, Belgrade</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card scroll-reveal">
+                    <p class="testimonial-text" data-en="The e-commerce platform they built for us is simply phenomenal. Sales have tripled and customer satisfaction is at an all-time high!" data-sr="E-commerce platforma koju su nam napravili je jednostavno fenomenalna. Prodaja se utrostručila, a zadovoljstvo kupaca je na najvišem nivou!">
+                        "The e-commerce platform they built for us is simply phenomenal. Sales have tripled and customer satisfaction is at an all-time high!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AJ</div>
+                        <div class="author-info">
+                            <h4 data-en="Ana Jovanović" data-sr="Ana Jovanović">Ana Jovanović</h4>
+                            <p data-en="Pharmacy Owner, Novi Sad" data-sr="Vlasnica apoteke, Novi Sad">Pharmacy Owner, Novi Sad</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card scroll-reveal">
+                    <p class="testimonial-text" data-en="Professional, creative, and incredibly efficient. They delivered exactly what we needed and more. Highly recommended!" data-sr="Profesionalni, kreativni i neverovatno efikasni. Isporučili su tačno ono što nam je trebalo i više. Toplo preporučujem!">
+                        "Professional, creative, and incredibly efficient. They delivered exactly what we needed and more. Highly recommended!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MN</div>
+                        <div class="author-info">
+                            <h4 data-en="Milan Nikolić" data-sr="Milan Nikolić">Milan Nikolić</h4>
+                            <p data-en="Tech Startup CEO, Niš" data-sr="CEO Tech Startup-a, Niš">Tech Startup CEO, Niš</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card scroll-reveal">
+                    <p class="testimonial-text" data-en="Working with Medicus Studio was the best decision for our clinic. The website is beautiful, functional, and brought us many new patients." data-sr="Saradnja sa Medicus Studio je bila najbolja odluka za našu kliniku. Sajt je prelep, funkcionalan i doveo nam je mnogo novih pacijenata.">
+                        "Working with Medicus Studio was the best decision for our clinic. The website is beautiful, functional, and brought us many new patients."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SV</div>
+                        <div class="author-info">
+                            <h4 data-en="Dr. Stefana Vuković" data-sr="Dr Stefana Vuković">Dr. Stefana Vuković</h4>
+                            <p data-en="Dental Clinic, Kragujevac" data-sr="Stomatološka klinika, Kragujevac">Dental Clinic, Kragujevac</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card scroll-reveal">
+                    <p class="testimonial-text" data-en="Their attention to detail and innovative approach exceeded all our expectations. The mobile app they created is simply amazing!" data-sr="Njihova pažnja na detalje i inovativan pristup je prevazišao sva naša očekivanja. Mobilna aplikacija koju su kreirali je jednostavno neverovatna!">
+                        "Their attention to detail and innovative approach exceeded all our expectations. The mobile app they created is simply amazing!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">LM</div>
+                        <div class="author-info">
+                            <h4 data-en="Lazar Milanović" data-sr="Lazar Milanović">Lazar Milanović</h4>
+                            <p data-en="Healthcare Startup, Subotica" data-sr="Healthcare Startup, Subotica">Healthcare Startup, Subotica</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card scroll-reveal">
+                    <p class="testimonial-text" data-en="Outstanding quality and service! They understood our vision perfectly and delivered a website that truly represents our brand." data-sr="Izuzetna kvalitet i servis! Savršeno su razumeli našu viziju i isporučili sajt koji stvarno predstavlja naš brend.">
+                        "Outstanding quality and service! They understood our vision perfectly and delivered a website that truly represents our brand."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JR</div>
+                        <div class="author-info">
+                            <h4 data-en="Jelena Radić" data-sr="Jelena Radić">Jelena Radić</h4>
+                            <p data-en="Medical Center Director, Zemun" data-sr="Direktor medicinskog centra, Zemun">Medical Center Director, Zemun</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==== PRICING SECTION ==== -->
+    <section class="pricing scroll-reveal" id="pricing">
+        <div class="container">
+            <h2 class="section-title" data-en="Transparent Pricing" data-sr="Transparentne Cene">Transparent Pricing</h2>
+            <p class="section-subtitle" data-en="Choose the perfect package for your needs. All prices are starting points - we customize every solution for your specific requirements." data-sr="Izaberite savršen paket za vaše potrebe. Sve cene su početne tačke - prilagođavamo svako rešenje vašim specifičnim zahtevima.">
+                Choose the perfect package for your needs. All prices are starting points - we customize every solution for your specific requirements.
+            </p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card scroll-reveal">
+                    <h3 class="pricing-title" data-en="Startup Package" data-sr="Startup Paket">Startup Package</h3>
+                    <div class="pricing-price">€700</div>
+                    <div class="pricing-period" data-en="Starting from" data-sr="Počinje od">Starting from</div>
+                    <ul class="pricing-features">
+                        <li data-en="Responsive Website Design" data-sr="Responzivan dizajn sajta">Responsive Website Design</li>
+                        <li data-en="5-10 Pages" data-sr="5-10 strana">5-10 Pages</li>
+                        <li data-en="Contact Forms" data-sr="Kontakt forme">Contact Forms</li>
+                        <li data-en="SEO Optimization" data-sr="SEO optimizacija">SEO Optimization</li>
+                        <li data-en="Mobile Friendly" data-sr="Prilagođeno mobilnom">Mobile Friendly</li>
+                        <li data-en="3 Months Support" data-sr="3 meseca podrške">3 Months Support</li>
+                    </ul>
+                    <button class="pricing-button" data-en="Get Started" data-sr="Počni Odmah">Get Started</button>
+                </div>
+                
+                <div class="pricing-card featured scroll-reveal">
+                    <h3 class="pricing-title" data-en="Professional Package" data-sr="Professional Paket">Professional Package</h3>
+                    <div class="pricing-price">€1,500</div>
+                    <div class="pricing-period" data-en="Starting from" data-sr="Počinje od">Starting from</div>
+                    <ul class="pricing-features">
+                        <li data-en="Advanced Website Design" data-sr="Napredni dizajn sajta">Advanced Website Design</li>
+                        <li data-en="15-25 Pages" data-sr="15-25 strana">15-25 Pages</li>
+                        <li data-en="Content Management System" data-sr="Sistem za upravljanje sadržajem">Content Management System</li>
+                        <li data-en="E-Commerce Integration" data-sr="E-Commerce integracija">E-Commerce Integration</li>
+                        <li data-en="Advanced SEO" data-sr="Napredni SEO">Advanced SEO</li>
+                        <li data-en="Analytics Integration" data-sr="Integracija analitike">Analytics Integration</li>
+                        <li data-en="6 Months Support" data-sr="6 meseci podrške">6 Months Support</li>
+                    </ul>
+                    <button class="pricing-button" data-en="Most Popular" data-sr="Najpopularniji">Most Popular</button>
+                </div>
+                
+                <div class="pricing-card scroll-reveal">
+                    <h3 class="pricing-title" data-en="Enterprise Package" data-sr="Enterprise Paket">Enterprise Package</h3>
+                    <div class="pricing-price">€3,500</div>
+                    <div class="pricing-period" data-en="Starting from" data-sr="Počinje od">Starting from</div>
+                    <ul class="pricing-features">
+                        <li data-en="Custom Web Application" data-sr="Prilagođena web aplikacija">Custom Web Application</li>
+                        <li data-en="Unlimited Pages" data-sr="Neograničen broj strana">Unlimited Pages</li>
+                        <li data-en="Advanced Integrations" data-sr="Napredne integracije">Advanced Integrations</li>
+                        <li data-en="Database Solutions" data-sr="Rešenja baza podataka">Database Solutions</li>
+                        <li data-en="Security Features" data-sr="Bezbednosne funkcije">Security Features</li>
+                        <li data-en="Performance Optimization" data-sr="Optimizacija performansi">Performance Optimization</li>
+                        <li data-en="12 Months Support" data-sr="12 meseci podrške">12 Months Support</li>
+                    </ul>
+                    <button class="pricing-button" data-en="Contact Us" data-sr="Kontaktiraj Nas">Contact Us</button>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 60px; color: rgba(255, 255, 255, 0.8);">
+                <p style="font-size: 1.2rem; margin-bottom: 20px;" data-en="💡 All prices are negotiable and customized based on your specific needs" data-sr="💡 Sve cene su pregovarajuće i prilagođene prema vašim specifičnim potrebama">
+                    💡 All prices are negotiable and customized based on your specific needs
+                </p>
+                <p style="font-size: 1rem;" data-en="Contact us for a personalized quote tailored to your project requirements" data-sr="Kontaktirajte nas za personalizovanu ponudu prilagođenu zahtevima vašeg projekta">
+                    Contact us for a personalized quote tailored to your project requirements
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==== CONTACT SECTION ==== -->
+    <section class="contact scroll-reveal" id="contact">
+        <div class="container">
+            <h2 class="section-title" data-en="Let's Create Something Amazing" data-sr="Hajde da Kreiramo Nešto Neverovatno">Let's Create Something Amazing</h2>
+            <p class="section-subtitle" data-en="Ready to transform your digital presence? Get in touch and let's discuss your project." data-sr="Spremni da transformišete svoju digitalnu prisutnost? Stupite u kontakt i razgovarajmo o vašem projektu.">
+                Ready to transform your digital presence? Get in touch and let's discuss your project.
+            </p>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3 data-en="Get In Touch" data-sr="Stupite u Kontakt">Get In Touch</h3>
+                    <p data-en="We're here to help bring your vision to life. Reach out through any of the channels below, and we'll get back to you within 24 hours." data-sr="Tu smo da pomognemo oživiti vašu viziju. Obratite nam se kroz bilo koji od kanala ispod, i javićemo vam se u roku od 24 sata.">
+                        We're here to help bring your vision to life. Reach out through any of the channels below, and we'll get back to you within 24 hours.
+                    </p>
+                    
+                    <ul class="contact-details">
+                        <li>
+                            <i>📧</i>
+                            <span>djordje.stojic007@gmail.com</span>
+                        </li>
+                        <li>
+                            <i>📍</i>
+                            <span data-en="Belgrade, Serbia" data-sr="Beograd, Srbija">Belgrade, Serbia</span>
+                        </li>
+                        <li>
+                            <i>⏰</i>
+                            <span data-en="Mon-Fri: 9:00 AM - 6:00 PM CET" data-sr="Pon-Pet: 9:00 - 18:00 CET">Mon-Fri: 9:00 AM - 6:00 PM CET</span>
+                        </li>
+                        <li>
+                            <i>🚀</i>
+                            <span data-en="Response time: Within 24 hours" data-sr="Vreme odgovora: U roku od 24 sata">Response time: Within 24 hours</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label data-en="Full Name" data-sr="Ime i Prezime">Full Name</label>
+                        <input type="text" id="name" name="name" required placeholder="John Doe">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label data-en="Email Address" data-sr="Email Adresa">Email Address</label>
+                        <input type="email" id="email" name="email" required placeholder="john@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label data-en="Phone Number (Optional)" data-sr="Broj telefona (Opciono)">Phone Number (Optional)</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+381 60 123 4567">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label data-en="Project Type" data-sr="Tip Projekta">Project Type</label>
+                        <select id="projectType" name="projectType" required style="width: 100%; padding: 15px 20px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 15px; color: white; font-size: 1rem;">
+                            <option value="" data-en="Select project type" data-sr="Izaberite tip projekta">Select project type</option>
+                            <option value="medical" data-en="Medical Website" data-sr="Medicinski Sajt">Medical Website</option>
+                            <option value="ecommerce" data-en="E-Commerce Store" data-sr="E-Commerce Prodavnica">E-Commerce Store</option>
+                            <option value="webapp" data-en="Web Application" data-sr="Web Aplikacija">Web Application</option>
+                            <option value="mobile" data-en="Mobile App" data-sr="Mobilna Aplikacija">Mobile App</option>
+                            <option value="redesign" data-en="Website Redesign" data-sr="Redizajn Sajta">Website Redesign</option>
+                            <option value="other" data-en="Other" data-sr="Ostalo">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label data-en="Project Budget" data-sr="Budžet Projekta">Project Budget</label>
+                        <select id="budget" name="budget" required style="width: 100%; padding: 15px 20px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 15px; color: white; font-size: 1rem;">
+                            <option value="" data-en="Select budget range" data-sr="Izaberite raspon budžeta">Select budget range</option>
+                            <option value="1000-3000" data-en="€1,000 - €3,000" data-sr="€1,000 - €3,000">€1,000 - €3,000</option>
+                            <option value="3000-7000" data-en="€3,000 - €7,000" data-sr="€3,000 - €7,000">€3,000 - €7,000</option>
+                            <option value="7000-15000" data-en="€7,000 - €15,000" data-sr="€7,000 - €15,000">€7,000 - €15,000</option>
+                            <option value="15000+" data-en="€15,000+" data-sr="€15,000+">€15,000+</option>
+                            <option value="discuss" data-en="Let's discuss" data-sr="Razgovarajmo">Let's discuss</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label data-en="Project Details" data-sr="Detalji Projekta">Project Details</label>
+                        <textarea id="message" name="message" required placeholder="Tell us about your project, goals, timeline, and any specific requirements..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-button" data-en="Send Message" data-sr="Pošalji Poruku">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==== FOOTER ==== -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">MEDICUS STUDIO</div>
+            <p class="footer-text" data-en="Crafting digital experiences that drive results. Based in Belgrade, Serbia - Serving clients worldwide." data-sr="Kreiramo digitalna iskustva koja donose rezultate. Sa sedištem u Beogradu, Srbija - Služimo klijente širom sveta.">
+                Crafting digital experiences that drive results. Based in Belgrade, Serbia - Serving clients worldwide.
+            </p>
+            
+            <div class="social-links">
+                <a href="mailto:djordje.stojic007@gmail.com" title="Email">📧</a>
+                <a href="#" title="LinkedIn">💼</a>
+                <a href="#" title="Behance">🎨</a>
+                <a href="#" title="GitHub">💻</a>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Medicus Studio. <span data-en="All rights reserved." data-sr="Sva prava zadržana.">All rights reserved.</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ==== VARIABLES AND INITIALIZATION ====
+        let currentLanguage = 'sr';
+        let cursorTrails = [];
+        const maxTrails = 10;
+        
+        // ==== CURSOR SYSTEM ====
+        const cursor = document.getElementById('cursor');
+        const cursorGlow = document.getElementById('cursor-glow');
+
+        document.addEventListener('mousemove', (e) => {
+            // Main cursor
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            // Cursor glow with delay
+            setTimeout(() => {
+                cursorGlow.style.left = (e.clientX - 20) + 'px';
+                cursorGlow.style.top = (e.clientY - 20) + 'px';
+            }, 50);
+            
+            // Create trail effect
+            createCursorTrail(e.clientX, e.clientY);
+        });
+
+        function createCursorTrail(x, y) {
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            trail.style.left = x + 'px';
+            trail.style.top = y + 'px';
+            document.body.appendChild(trail);
+            
+            cursorTrails.push(trail);
+            
+            // Remove old trails
+            if (cursorTrails.length > maxTrails) {
+                const oldTrail = cursorTrails.shift();
+                oldTrail.remove();
+            }
+            
+            // Animate trail
+            setTimeout(() => {
+                trail.style.opacity = '0';
+                trail.style.transform = 'scale(2)';
+                setTimeout(() => {
+                    if (trail.parentNode) {
+                        trail.remove();
+                    }
+                }, 300);
+            }, 100);
+        }
+
+        // Cursor hover effects
+        document.querySelectorAll('a, button, .portfolio-item, .service-card, .testimonial-card').forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(3)';
+                cursorGlow.style.transform = 'scale(1.5)';
+                cursorGlow.style.background = 'radial-gradient(circle, rgba(255,45,146,0.4) 0%, transparent 70%)';
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursorGlow.style.transform = 'scale(1)';
+                cursorGlow.style.background = 'radial-gradient(circle, rgba(0,122,255,0.3) 0%, transparent 70%)';
+            });
+        });
+
+        // ==== LANGUAGE TOGGLE ====
+        const langToggle = document.getElementById('langToggle');
+        const translations = {
+            en: {
+                'langToggle': 'EN | SR'
+            },
+            sr: {
+                'langToggle': 'SR | EN'
+            }
+        };
+
+        langToggle.addEventListener('click', () => {
+            currentLanguage = currentLanguage === 'en' ? 'sr' : 'en';
+            updateLanguage();
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-en][data-sr]').forEach(element => {
+                const text = currentLanguage === 'en' ? element.getAttribute('data-en') : element.getAttribute('data-sr');
+                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                    element.placeholder = text;
+                } else if (element.tagName === 'OPTION') {
+                    element.textContent = text;
+                } else {
+                    element.textContent = text;
+                }
+            });
+            
+            langToggle.textContent = currentLanguage === 'en' ? 'EN | SR' : 'SR | EN';
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = currentLanguage;
+        }
+
+        // ==== NAVBAR SCROLL EFFECT ====
+        const navbar = document.getElementById('navbar');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // ==== SMOOTH SCROLLING ====
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Add extra smooth scrolling with custom animation
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - 80;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // ==== SCROLL REVEAL ANIMATIONS ====
+        const observerOptions = {
+            threshold: 0.05,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    // Add staggered delay for multiple elements
+                    setTimeout(() => {
+                        entry.target.classList.add('revealed');
+                    }, index * 150); // Stagger animations by 150ms
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(element => {
+            observer.observe(element);
+        });
+
+        // ==== COUNTER ANIMATION ====
+        function animateCounter(element) {
+            const target = parseInt(element.textContent);
+            const duration = 2000; // 2 seconds
+            const step = target / (duration / 16); // 60fps
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    element.textContent = target + (element.textContent.includes('+') ? '+' : '') + (element.textContent.includes('%') ? '%' : '');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current) + (element.textContent.includes('+') ? '+' : '') + (element.textContent.includes('%') ? '%' : '');
+                }
+            }, 16);
+        }
+
+        // Animate counters when they come into view
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target.querySelector('.stat-number');
+                    if (counter && !counter.classList.contains('animated')) {
+                        counter.classList.add('animated');
+                        animateCounter(counter);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stat-card').forEach(card => {
+            counterObserver.observe(card);
+        });
+
+        // ==== BACKGROUND PARALLAX EFFECT ====
+        let ticking = false;
+        
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.3;
+            
+            // Smooth parallax for hero background
+            const parallax = document.querySelector('.hero-bg-animation');
+            if (parallax) {
+                parallax.style.transform = `translateY(${rate}px)`;
+            }
+            
+            // Ultra smooth floating elements parallax
+            document.querySelectorAll('.floating-element').forEach((element, index) => {
+                const speed = 0.2 + (index * 0.05);
+                const rotation = scrolled * 0.05;
+                element.style.transform = `translateY(${scrolled * speed}px) rotate(${rotation}deg)`;
+            });
+            
+            ticking = false;
+        }
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        });
+
+        // ==== CONTACT FORM HANDLING ====
+        const contactForm = document.getElementById('contactForm');
+        
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitButton = contactForm.querySelector('.submit-button');
+            const originalText = submitButton.textContent;
+            
+            // Show loading state
+            submitButton.textContent = currentLanguage === 'en' ? 'Sending...' : 'Šalje se...';
+            submitButton.disabled = true;
+            
+            // Simulate form submission (replace with actual form handling)
+            setTimeout(() => {
+                alert(currentLanguage === 'en' 
+                    ? 'Thank you for your message! We\'ll get back to you within 24 hours.' 
+                    : 'Hvala vam na poruci! Javićemo vam se u roku od 24 sata.'
+                );
+                
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+                contactForm.reset();
+            }, 2000);
+        });
+
+        // ==== PRICING CARD INTERACTIONS ====
+        document.querySelectorAll('.pricing-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const contactSection = document.getElementById('contact');
+                
+                // Ultra smooth scroll to contact
+                const targetPosition = contactSection.getBoundingClientRect().top + window.pageYOffset - 80;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // Pre-fill form based on selected package
+                const card = button.closest('.pricing-card');
+                const packageTitle = card.querySelector('.pricing-title').textContent;
+                const messageField = document.getElementById('message');
+                
+                if (messageField) {
+                    setTimeout(() => {
+                        messageField.value = currentLanguage === 'en' 
+                            ? `Hi! I'm interested in the ${packageTitle}. Please provide more details about...`
+                            : `Zdravo! Zanima me ${packageTitle}. Molim vas da mi pošaljete više detalja o...`;
+                    }, 1000);
+                }
+            });
+        });
+
+        // ==== LOADING ANIMATION ====
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                // Start hero animations
+                document.body.style.overflow = 'visible';
+            }, 2000);
+        });
+
+        // ==== ADVANCED SCROLL EFFECTS ====
+        let lastScrollY = window.scrollY;
+        
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            
+            // Hide/show navbar on scroll direction
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                navbar.style.transform = 'translateY(0)';
+            }
+            
+            lastScrollY = currentScrollY;
+            
+            // Dynamic background color changes
+            const sections = ['hero', 'about', 'services', 'portfolio', 'testimonials', 'pricing', 'contact'];
+            let currentSection = '';
+            
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= window.innerHeight * 0.5 && rect.bottom >= window.innerHeight * 0.5) {
+                        currentSection = sectionId;
+                    }
+                }
+            });
+            
+            // Update cursor glow color based on section
+            const sectionColors = {
+                hero: 'rgba(0,122,255,0.3)',
+                about: 'rgba(88,86,214,0.3)',
+                services: 'rgba(255,45,146,0.3)',
+                portfolio: 'rgba(48,209,88,0.3)',
+                testimonials: 'rgba(255,204,0,0.3)',
+                pricing: 'rgba(0,122,255,0.3)',
+                contact: 'rgba(255,45,146,0.3)'
+            };
+            
+            if (currentSection && sectionColors[currentSection]) {
+                cursorGlow.style.background = `radial-gradient(circle, ${sectionColors[currentSection]} 0%, transparent 70%)`;
+            }
+        });
+
+        // ==== ADVANCED ANIMATIONS ====
+        // Text reveal animation
+        function revealText(element) {
+            const text = element.textContent;
+            element.textContent = '';
+            
+            [...text].forEach((char, i) => {
+                const span = document.createElement('span');
+                span.textContent = char === ' ' ? '\u00A0' : char;
+                span.style.opacity = '0';
+                span.style.transform = 'translateY(50px)';
+                span.style.transition = `all 0.5s ease ${i * 0.05}s`;
+                element.appendChild(span);
+                
+                setTimeout(() => {
+                    span.style.opacity = '1';
+                    span.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        }
+
+        // Apply text reveal to hero title
+        const heroTitle = document.querySelector('.hero h1');
+        if (heroTitle) {
+            setTimeout(() => revealText(heroTitle), 500);
+        }
+
+        // ==== PERFORMANCE OPTIMIZATIONS ====
+        // Throttle scroll events
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            }
+        }
+
+        // Apply throttling to scroll events
+        window.addEventListener('scroll', throttle(() => {
+            // Scroll-dependent code here
+        }, 16)); // ~60fps
+
+        // ==== ACCESSIBILITY IMPROVEMENTS ====
+        // Focus management for keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                document.body.classList.add('keyboard-navigation');
+            }
+        });
+
+        document.addEventListener('mousedown', () => {
+            document.body.classList.remove('keyboard-navigation');
+        });
+
+        // Add focus styles for keyboard navigation
+        const style = document.createElement('style');
+        style.textContent = `
+            .keyboard-navigation *:focus {
+                outline: 2px solid var(--electric-blue) !important;
+                outline-offset: 2px !important;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ==== INITIALIZATION ====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hide initial loading
+            document.body.style.overflow = 'hidden';
+            
+            // Initialize language
+            updateLanguage();
+            
+            // Add initial animations to visible elements
+            setTimeout(() => {
+                document.querySelectorAll('.scroll-reveal').forEach(element => {
+                    const rect = element.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        element.classList.add('revealed');
+                    }
+                });
+            }, 500);
+        });
+
+        // ==== EASTER EGGS AND SPECIAL EFFECTS ====
+        // Konami code easter egg
+        let konamiCode = [];
+        const konamiSequence = [
+            'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+            'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+            'KeyB', 'KeyA'
+        ];
+
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.code);
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+            
+            if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
+                // Special effect when konami code is entered
+                document.body.style.filter = 'hue-rotate(180deg)';
+                setTimeout(() => {
+                    document.body.style.filter = 'none';
+                    alert('🎉 You found the easter egg! Extra creative mode activated!');
+                }, 2000);
+                konamiCode = [];
+            }
+        });
+
+        // Double-click logo easter egg
+        let logoClickCount = 0;
+        document.querySelector('.logo').addEventListener('click', () => {
+            logoClickCount++;
+            if (logoClickCount >= 5) {
+                // Add special rainbow animation
+                document.querySelector('.logo').style.animation = 'gradientShift 0.5s ease-in-out infinite';
+                setTimeout(() => {
+                    document.querySelector('.logo').style.animation = '';
+                    logoClickCount = 0;
+                }, 3000);
+            }
+        });
+
+
+
+
+         const form = document.getElementById('contactForm');
+         const success = document.getElementById('success');
+         const formError = document.getElementById('formError');
+
+         function encode(s) { return encodeURIComponent(s).replace(/%20/g, '+'); }
+
+         form.addEventListener('submit', function (e) {
+         e.preventDefault();
+         formError.style.display = 'none';
+
+         const name = document.getElementById('name').value.trim();
+         const email = document.getElementById('email').value.trim();
+         const phone = document.getElementById('phone').value.trim();
+         const subject = document.getElementById('subject').value.trim();
+         const message = document.getElementById('message').value.trim();
+
+         // Provera obaveznih polja
+         if (!name || !email || !subject || !message) {
+         formError.style.display = 'block';
+         return;
+         }
+
+         // Sastavljanje tela poruke
+         const lines = [
+         `Ime i prezime: ${name}`,
+         `Email: ${email}`,
+         phone ? `Telefon: ${phone}` : null,
+         '',
+         'Poruka:',
+         message
+         ].filter(Boolean).join('\n');
+
+          // mailto link
+          const to = 'djordje.stojic007@gmail.com';
+          const mailto = `mailto:${to}?subject=${encode(subject)}&body=${encode(lines)}`;
+
+          // Prikaži uspeh i resetuj formu (napomena: mail se šalje iz korisnikovog klijenta)
+          success.style.display = 'block';
+           form.reset();
+
+            // Otvori podrazumevani email klijent
+           window.location.href = mailto;
+          });
+
+
+
+
+
+
+
+
+
+
+
+        
+    </script>
+</body>
+</html>
